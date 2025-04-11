@@ -9,7 +9,7 @@ import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 // import cors from 'cors'
 const port = process.env.PORT || 2600;
-
+    
 connectDB()
 
 app.use(e.json());
