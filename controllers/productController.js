@@ -4,16 +4,20 @@ const addProduct = async (req, res, next) => {
     try {
         let imageUrl = req.file ? req.file.path : null; 
 
-        const { name , description, sku, price, oldPrice } = req.body;
+        const { productName , description, sku, price, oldPrice, productQuantity, category, rating, status } = req.body;
         // console.log("New user :" + JSON.stringify(req.user))
 
         const newProduct = new Product({
-            name,
+            productName,
             image: imageUrl,
             description,
             sku,
             price,
-            oldPrice
+            oldPrice,
+            productQuantity,
+            category,
+            rating,
+            status
         });
         
         await newProduct.save();
