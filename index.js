@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import cookieParser from "cookie-parser";
 import errorHandler from './middlewares/errorHandler.js'
-import connectDB from "./dbconfig/dbconfig.js";
+import connectDB from "./dbConfig/dbconfig.js";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
