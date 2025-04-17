@@ -60,6 +60,7 @@ const updateOneProduct = async(req,res,next)=>{
 const getAllProducts = async (req, res, next) => {
     try {
         let products = await Product.find();
+        console.log(products)
 
         if (!products) {
             return res.status(404).json({ message: "No product found" })
