@@ -4,7 +4,7 @@ const addProduct = async (req, res, next) => {
     try {
         let imageUrl = req.file ? req.file.path : null; 
 
-        const { name , description, sku, mainPrice, oldPrice } = req.body;
+        const { name , description, sku, price, oldPrice } = req.body;
         // console.log("New user :" + JSON.stringify(req.user))
 
         const newProduct = new Product({
@@ -12,7 +12,7 @@ const addProduct = async (req, res, next) => {
             image: imageUrl,
             description,
             sku,
-            mainPrice,
+            price,
             oldPrice
         });
         

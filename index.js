@@ -7,6 +7,7 @@ import errorHandler from './middlewares/errorHandler.js'
 import connectDB from "./dbconfig/dbconfig.js";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
+import orderRouter from "./routes/orderRoutes.js";
 // import cors from 'cors'
 const port = process.env.PORT || 2600;
     
@@ -25,6 +26,8 @@ app.use(cookieParser());
 app.use('/auth', authRouter)
 
 app.use('/product',productRouter)
+
+app.use('/order',orderRouter)
 
 app.use(errorHandler)
 
