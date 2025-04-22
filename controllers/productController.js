@@ -92,10 +92,39 @@ const getOneProduct = async (req, res, next) => {
     }
 }
 
+const getProductByCategory = async (req, res, next) => {
+    try {
+        let { category } = req.params;
+        let products = await Product.find({ category });
+        console.log(products)
+        if (!products) return res.status(404).json({ message: "No product found" });
+        res.status(200).json(products);
+    }
+    catch (error) {
+        console.log(`Error while fetching Product : ${error}`);
+        next(error);
+    }
+}
+
+const filterProducts = async (req, res, next) => {
+    try {
+        const { category } = req.query;
+        let products = await Product.find({ category });
+        if (!products) return res.status(404).json({ message: "No product found" });
+        res.status(200).json(products);
+    }
+    catch (error) {
+        console.log(`Error while fetching Product : ${error}`);
+        next(error);
+    }
+}
+
 export {
     addProduct,
     delProduct,
     getOneProduct,
     getAllProducts,
-    updateOneProduct
+    updateOneProduct,
+    getProductByCategory,
+    filterProducts
 }

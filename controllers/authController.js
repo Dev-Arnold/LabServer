@@ -1,18 +1,18 @@
-import jwt from 'jsonwebtoken'
-import bcryptjs from 'bcryptjs'
+import jwt from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
 import dotenv from "dotenv";
 dotenv.config();
 // const User = require("../models/User");
-import User from '../models/User.js';
-import cookieParser from 'cookie-parser';
+import User from "../models/User.js";
+import cookieParser from "cookie-parser";
 
 const signup = async (req, res, next) => {
   // const email_ent = await User.findOne({email});
 
   try {
-    const { fullname, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
-    if (!fullname || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
       return res.status(404).json({ message: "All fields are required" });
     }
 
@@ -28,7 +28,8 @@ const signup = async (req, res, next) => {
     const hashedpassword = await bcryptjs.hash(password, 10);
 
     const newUser = new User({
-      fullname,
+      firstName,
+      lastName,
       email,
       password: hashedpassword,
     });
@@ -49,22 +50,22 @@ const signin = async (req, res, next) => {
       return res.status(400).json({ emailMessage: "User not found" });
     }
 
-    const checkpassword = await bcrypt.compare(password, user.password);
+    const checkpassword = await bcryptjs.compare(password, user.password);
 
     if (!checkpassword) {
       return res.status(400).json({ passwordMessage: "Incorrect password" });
     }
     console.log("Password Match: ", checkpassword);
     const token = jwt.sign(
-      { id: user._id, role: user.role, username:user.username },
+      { id: user._id, role: user.role, username: user.username },
       process.env.SECRETKEY,
       { expiresIn: "1h" }
     );
 
-     // Set the token as an HTTP-only cookie
+    // Set the token as an HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: true,  // Prevents JavaScript access for security
-      secure: process.env.NODE_ENV === "production",   // Use true in production (HTTPS required)
+      httpOnly: true, // Prevents JavaScript access for security
+      secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
       sameSite: "strict", // Prevent CSRF attacks
     });
 
@@ -131,19 +132,12 @@ const reset_password = async (req, res, next) => {
 
 const logout = async (req, res) => {
   res.clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
-      path: "/"
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "None",
+    path: "/",
   });
   res.json({ message: "Logged out successfully" });
 };
 
-
-export {
-  signup,
-  signin,
-  forgot_password,
-  reset_password,
-  logout
-};
+export { signup, signin, forgot_password, reset_password, logout };

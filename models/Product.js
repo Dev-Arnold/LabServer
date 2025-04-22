@@ -32,7 +32,15 @@ const productSchema = new mongoose.Schema({
     category:{
         type: String,
         required: true,
-        enum:["medical","equipment","safety","diagnostic"],
+        enum:[
+            "hospital",
+            "education",
+            "lab",
+            "surgical",
+            "biology",
+            "chemistry",
+            "physics"
+        ],
     },
     rating:{
         type: Number,
