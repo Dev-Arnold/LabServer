@@ -44,8 +44,8 @@ const placeOrder = async (req, res) => {
 const getOrders = async(req,res,next)=>{
     try {
         const allOrders = await Order.find()
-            .populate("user" , "fullname")
-            .populate("items.product", "name")
+            .populate("user" , "firstName lastName email")
+            .populate("items.product", "productName")
         if(!allOrders) return res.status(404).json({message:"No orders found"});
 
         res.status(200).json(allOrders)
@@ -61,8 +61,8 @@ const get1Order = async(req,res,next)=>{
     try {
         let { id } = req.params;
         let oneOrder = await Order.findById(id)
-            .populate("user" , "fullname")
-            .populate("items.product", "name")
+            .populate("user" , "firstName lastName email")
+            .populate("items.product", "productName")
         console.log(oneOrder)
 
         if(!oneOrder) return res.status(404).json({message:"No order found"});

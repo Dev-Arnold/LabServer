@@ -8,6 +8,8 @@ import connectDB from "./dbConfig/dbconfig.js";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+// const paymentRoutes = require('./routes/paymentRoutes');
+import paymentRouter from "./routes/paymentRoutes.js";
 import cors from 'cors'
 const port = process.env.PORT || 2600;
     
@@ -26,6 +28,8 @@ app.use('/auth', authRouter)
 app.use('/product',productRouter)
 
 app.use('/order',orderRouter)
+
+app.use('/api/payment', paymentRouter);
 
 app.use(errorHandler)
 
