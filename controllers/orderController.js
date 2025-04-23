@@ -45,7 +45,7 @@ const getOrders = async(req,res,next)=>{
     try {
         const allOrders = await Order.find()
             .populate("user" , "firstName lastName email")
-            .populate("items.product", "productName")
+            .populate("items.product", "productName price")
         if(!allOrders) return res.status(404).json({message:"No orders found"});
 
         res.status(200).json(allOrders)
