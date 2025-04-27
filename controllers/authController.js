@@ -46,6 +46,7 @@ const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    console.log(req.body);
     if (!user) {
       return res.status(400).json({ emailMessage: "User not found" });
     }

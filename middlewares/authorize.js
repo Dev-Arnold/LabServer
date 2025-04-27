@@ -1,4 +1,5 @@
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 const authorize = (allowedRoles) => (req, res, next) => {
   console.log("Cookies in Request:", req.cookies); // Debugging
@@ -26,4 +27,4 @@ const authorize = (allowedRoles) => (req, res, next) => {
   }
 };
 
-module.exports = authorize;
+export default authorize;

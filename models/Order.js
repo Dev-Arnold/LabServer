@@ -13,6 +13,12 @@ const orderItemSchema = new mongoose.Schema({
   }
 });
 
+const billingDetailsSchema = new mongoose.Schema({
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
+  email: { type: String, required: true }
+});
+
 const shippingAddressSchema = new mongoose.Schema({
   address: { type: String, required: true },
   city: { type: String, required: true },
@@ -27,10 +33,15 @@ const orderSchema = new mongoose.Schema(
       required: true
     },
     items: [orderItemSchema],
+    billingDetails: billingDetailsSchema,
     shippingAddress: shippingAddressSchema,
     totalAmount: {
       type: Number,
       required: true
+    },
+    orderDate:{
+      type:Date,
+      required: false
     },
     paymentStatus: {
       type: String,

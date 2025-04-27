@@ -4,31 +4,45 @@ import User from "../models/User.js";
 
 const placeOrder = async (req, res) => {
   try {
-    const { email, firstName, lastName, items, shippingAddress } = req.body;
+    const { billingDetails, items, shippingAddress } = req.body;
 
-    // 1. Find or create user
-    let user = await User.findOne({ email });
-    if (!user) {
-      user = await User.create({ email, firstName, lastName});
+    console.log(billingDetails, items, shippingAddress);
+ 
+    if (!items || items.length === 0) {
+      return res.status(400).json({ message: 'Cart is empty' });
     }
-
-    // 2. Calculate totalAmount
-    let totalAmount = 0;
-    for (let item of items) {
-      const product = await Product.findById(item.product);
-      if (!product) {
-        return res.status(400).json({ message: 'Invalid product in cart' });
-      }
-
-      totalAmount += product.price * item.quantity;
+    if (!billingDetails || !shippingAddress) {
+      return res.status(400).json({ message: 'Billing details and shipping address are required' });
     }
+    if (!billingDetails.firstname || !billingDetails.lastname || !billingDetails.email) {
+      return res.status(400).json({ message: 'Invalid billing details' });
+    }
+    if (!shippingAddress.address || !shippingAddress.city || !shippingAddress.state) {
+      return res.status(400).json({ message: 'Invalid shipping address' });
+    }
+    if (!req.user) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+    let totalAmount = 10039;
 
-    // 3. Create the order
+    // for (let item of items) {
+    //   const product = await Product.findById(item.product);
+    //   if (!product) {
+    //     return res.status(400).json({ message: 'Invalid product in cart' });
+    //   }
+
+    //   totalAmount += product.price * item.quantity;
+    // }
+    const orderDate = new Date().toISOString();
+    console.log(req.user.id)
+
     const order = await Order.create({
-      user: user._id,
+      user: req.user.id,
       items,
       totalAmount,
-      shippingAddress
+      billingDetails,
+      shippingAddress,
+      orderDate
     });
 
     res.status(201).json({

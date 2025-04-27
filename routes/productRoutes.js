@@ -2,12 +2,13 @@ import e from "express";
 const productRouter = e.Router();
 import { upload } from "../cloudinaryConfig.js";
 import { addProduct, delProduct, getAllProducts, getOneProduct, updateOneProduct } from "../controllers/productController.js";
+import authorize from "../middlewares/authorize.js";
 
-productRouter.post('/',upload.single('image'), addProduct);
+productRouter.post('/',upload.single('image'), authorize(["Admin","Staff"]), addProduct);
 
-productRouter.delete('/:id',delProduct);
+productRouter.delete('/:id',authorize(["Admin"]),delProduct);
 
-productRouter.put('/:id',updateOneProduct);
+productRouter.put('/:id',authorize(["Admin","Staff"]),updateOneProduct);
 
 productRouter.get('/:id',getOneProduct);
 
