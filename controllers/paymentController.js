@@ -18,10 +18,17 @@ const verifyPayment = async (req, res) => {
 
     if (data.data.status === 'success') {
       // TODO: Save payment, update order, etc
-      return res.status(200).json({ message: 'Payment verified successfully', data: data.data });
+      return res.status(200).json({ 
+        message: 'Payment verified successfully', 
+        paymentStatus: data.data.status, 
+        reference: data.data.reference, 
+        amount: data.data.amount, 
+        customerEmail: data.data.customer.email 
+      });
     } else {
       return res.status(400).json({ message: 'Payment not successful' });
     }
+    
   } catch (error) {
     return res.status(500).json({ message: 'Verification failed', error: error.message });
   }
