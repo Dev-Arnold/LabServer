@@ -76,7 +76,7 @@ const get1Order = async(req,res,next)=>{
         let { id } = req.params;
         let oneOrder = await Order.findById(id)
             .populate("user" , "firstName lastName email")
-            .populate("items.product", "productName")
+            .populate("items.product", "productName image price")
         console.log(oneOrder)
 
         if(!oneOrder) return res.status(404).json({message:"No order found"});
@@ -93,8 +93,8 @@ const get1Order = async(req,res,next)=>{
 
 const getOrderByUser = async (req, res, next) => {
     try {
-        let { id } = req.params;
-        let oneOrder = await Order.find({ user: id })
+        const userId = req.user.id;
+        let oneOrder = await Order.find({ user: userId })
             .populate("user" , "fullname")
             .populate("items.product", "name")
 

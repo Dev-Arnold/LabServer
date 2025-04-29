@@ -16,7 +16,8 @@ const orderItemSchema = new mongoose.Schema({
 const billingDetailsSchema = new mongoose.Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
-  email: { type: String, required: true }
+  email: { type: String, required: true },
+  phone:{type: Number, rerequired:true}
 });
 
 const shippingAddressSchema = new mongoose.Schema({
