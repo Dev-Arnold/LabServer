@@ -3,6 +3,6 @@ const paymentRouter = e.Router();
 import { verifyPayment } from "../controllers/paymentController.js";
 import authorize from "../middlewares/authorize.js";
 
-paymentRouter.post('/verify-payment',authorize(["Admin","Staff","User"]) ,verifyPayment);
+paymentRouter.post('/verify-payment' ,verifyPayment);
 
 export default paymentRouter;

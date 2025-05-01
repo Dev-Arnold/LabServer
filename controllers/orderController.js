@@ -1,6 +1,8 @@
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
+import Notification from '../models/Notification.js';
+import nodemailer from 'nodemailer';
 
 const placeOrder = async (req, res) => {
   try {
@@ -23,16 +25,16 @@ const placeOrder = async (req, res) => {
     if (!req.user) {
       return res.status(401).json({ message: 'User not authenticated' });
     }
-    let totalAmount = 10039;
+    let totalAmount = 0;
 
-    // for (let item of items) {
-    //   const product = await Product.findById(item.product);
-    //   if (!product) {
-    //     return res.status(400).json({ message: 'Invalid product in cart' });
-    //   }
+    for (let item of items) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res.status(400).json({ message: 'Invalid product in cart' });
+      }
 
-    //   totalAmount += product.price * item.quantity;
-    // }
+      totalAmount += product.price * item.quantity;
+    }
     const orderDate = new Date().toISOString();
     console.log(req.user.id)
 
@@ -44,6 +46,37 @@ const placeOrder = async (req, res) => {
       shippingAddress,
       orderDate
     });
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.ADMIN_EMAIL,
+        pass: process.env.ADMIN_EMAIL_PASSWORD,
+      },
+    });
+
+    const adminEmailHtml = `
+    <h2>🛒 New Order Alert</h2>
+    <p><strong>Customer:</strong> ${billingDetails.firstname} ${billingDetails.lastname}</p>
+    <p><strong>Email:</strong> ${billingDetails.email}</p>
+    <p><strong>Total:</strong> ₦${totalAmount.toLocaleString()}</p>
+    <p><strong>Order Date:</strong> ${new Date(orderDate).toLocaleString()}</p>
+  `;
+
+  await transporter.sendMail({
+    from: `"Store Bot" <${process.env.ADMIN_EMAIL}>`,
+    to: process.env.ADMIN_RECEIVER_EMAIL,
+    subject: '🚨 New Order Received',
+    html: adminEmailHtml,
+  });
+
+  await Notification.create({
+    title: 'New Order',
+    message: `₦${totalAmount} from ${billingDetails.firstname}`,
+    type: 'order',
+    read: false,
+    createdAt: new Date(),
+  });
 
     res.status(201).json({
       message: 'Order placed successfully',
@@ -110,9 +143,29 @@ const getOrderByUser = async (req, res, next) => {
     }
 }
 
+const getRecentOrders = async (req, res, next) => {
+    try {
+        const recentOrders = await Order.find()
+            .sort({ orderDate: -1 })
+            .limit(3)
+            .populate("user", "firstName lastName email")
+            .populate("items.product", "productName price");
+
+        if (!recentOrders) return res.status(404).json({ message: "No recent orders found" });
+
+        res.status(200).json(recentOrders);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+        next(err);
+    }
+}
+
 export {
     placeOrder,
     getOrders,
     get1Order,
-    getOrderByUser
+    getOrderByUser,
+    getRecentOrders
 }

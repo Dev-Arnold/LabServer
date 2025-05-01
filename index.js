@@ -8,6 +8,7 @@ import connectDB from "./dbConfig/dbconfig.js";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+import notificationRouter from "./routes/notificationRoutes.js";
 // const paymentRoutes = require('./routes/paymentRoutes');
 import paymentRouter from "./routes/paymentRoutes.js";
 import cors from 'cors'
@@ -25,11 +26,13 @@ app.use(cors({
     optionsSuccessStatus: 200
 }));
 
-app.use('/auth', authRouter)
+app.use('/auth', authRouter) 
 
 app.use('/product',productRouter)
 
 app.use('/order',orderRouter)
+
+app.use('/notification',notificationRouter)
 
 app.use('/api/payment', paymentRouter);
 

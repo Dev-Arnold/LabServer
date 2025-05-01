@@ -53,6 +53,10 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ['pending', 'shipped', 'delivered'],
       default: 'pending'
+    },
+    isNewOrder: {
+      type: Boolean,
+      default: true, // helps the admin see fresh orders
     }
   },
   {
