@@ -82,7 +82,7 @@ const signin = async (req, res, next) => {
     res.cookie("token", token, {
       httpOnly: true, // Prevents JavaScript access for security
       secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
-      sameSite: "strict", // Prevent CSRF attacks
+      sameSite: "none", // Prevent CSRF attacks
     });
 
     res.json({ message: "Login successful!" });
