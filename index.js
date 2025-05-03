@@ -11,6 +11,7 @@ import orderRouter from "./routes/orderRoutes.js";
 import notificationRouter from "./routes/notificationRoutes.js";
 // const paymentRoutes = require('./routes/paymentRoutes');
 import paymentRouter from "./routes/paymentRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import cors from 'cors'
 const port = process.env.PORT || 2600;
     
@@ -33,6 +34,8 @@ app.use('/product',productRouter)
 app.use('/order',orderRouter)
 
 app.use('/notification',notificationRouter)
+
+app.use('/user',userRoutes)
 
 app.use('/api/payment', paymentRouter);
 

@@ -1,4 +1,4 @@
-import user from "../models/User";
+import user from "../models/User.js";
 import jwt from 'jsonwebtoken'
 
 const updateUser = async (req, res, next) => {
@@ -42,6 +42,17 @@ const getUsers = async (req,res,next)=>{
     }
 }
 
+const getAllStaff = async (req, res) => {
+    try {
+        const staff = await user.find({ role: "Staff" }).select("-password");
+        if (!staff) return res.status(404).json({ message: "No staff found" });
+        res.json(staff);
+    } catch (err) {
+        console.error(`Failed to get all staff: ${err}`);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 const userProfile = async (req, res) => {
     try {
         let {id} = req.params;
@@ -61,5 +72,6 @@ export {
     updateUser,
     delUser,
     getUsers,
-    userProfile
+    userProfile,
+    getAllStaff
 }

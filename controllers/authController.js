@@ -10,7 +10,7 @@ const signup = async (req, res, next) => {
   // const email_ent = await User.findOne({email});
 
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, role , password } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
       return res.status(404).json({ message: "All fields are required" });
@@ -31,10 +31,25 @@ const signup = async (req, res, next) => {
       firstName,
       lastName,
       email,
+      role,
       password: hashedpassword,
     });
 
     await newUser.save();
+
+    const token = jwt.sign(
+      { id: newUser._id, role: newUser.role },
+      process.env.SECRETKEY,
+      { expiresIn: "3h" }
+    );
+
+    // Set the token as an HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents JavaScript access for security
+      secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
+      sameSite: "strict", // Prevent CSRF attacks
+    });
+
     res.status(201).json({ message: "Signup successful!" });
   } catch (err) {
     console.error(`Failed to create user : ${err}`);
@@ -58,9 +73,9 @@ const signin = async (req, res, next) => {
     }
     console.log("Password Match: ", checkpassword);
     const token = jwt.sign(
-      { id: user._id, role: user.role, username: user.username },
+      { id: user._id, role: user.role },
       process.env.SECRETKEY,
-      { expiresIn: "1h" }
+      { expiresIn: "3h" }
     );
 
     // Set the token as an HTTP-only cookie
@@ -141,4 +156,26 @@ const logout = async (req, res) => {
   res.json({ message: "Logged out successfully" });
 };
 
-export { signup, signin, forgot_password, reset_password, logout };
+const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id; // Assuming you have the user ID from the token
+    console.log("User ID:", userId); // Debugging
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcryptjs.compare(oldPassword, user.password);
+    console.log("Password Match: ", isMatch); // Debugging
+    if (!isMatch) return res.status(400).json({ message: "Old password is incorrect" });
+
+    user.password = await bcryptjs.hash(newPassword, 10);
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error changing password" });
+  }
+};
+
+export { signup, signin, forgot_password, reset_password, logout, changePassword};
