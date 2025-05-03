@@ -82,8 +82,9 @@ const signin = async (req, res, next) => {
     res.cookie("token", token, {
       httpOnly: true, // Prevents JavaScript access for security
       secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
-      sameSite: "none", // Prevent CSRF attacks
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+      // sameSite: "none", // Prevent CSRF attacks
+      sameSite: "strict", // Prevent CSRF attacks
+       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     });
 
     res.json({ message: "Login successful!" });
@@ -154,6 +155,14 @@ const logout = async (req, res) => {
     sameSite: "None",
     path: "/",
   });
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    path: "/",
+    expires: new Date(0), // Expire immediately
+  });
+
   res.json({ message: "Logged out successfully" });
 };
 
