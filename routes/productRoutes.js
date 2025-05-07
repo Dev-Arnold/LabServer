@@ -8,13 +8,13 @@ productRouter.post('/',upload.single('image'), authorize(["Admin","Staff"]), add
 
 productRouter.delete('/:id',authorize(["Admin"]),delProduct);
 
-productRouter.put('/:id',authorize(["Admin","Staff"]),updateOneProduct);
-
 productRouter.get('/latest', getLatestProducts);
 
-productRouter.get('/:category',getProductByCategory);
-
 productRouter.get('/:id',getOneProduct);
+
+productRouter.put('/:id',authorize(["Admin","Staff"]),updateOneProduct);
+
+productRouter.get('/category/:category',getProductByCategory);
 
 productRouter.get('/',getAllProducts);
 
