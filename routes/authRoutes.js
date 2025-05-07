@@ -1,5 +1,5 @@
 import e from "express";
-import { changePassword, logout, signin, signup } from "../controllers/authController.js";
+import { changePassword, loginAsAdmin, logout, signin, signup } from "../controllers/authController.js";
 import authorize from "../middlewares/authorize.js";
 import User from "../models/User.js";
 const authRouter = e.Router();
@@ -7,6 +7,8 @@ const authRouter = e.Router();
 authRouter.post('/',signup);
 
 authRouter.post('/login',signin)
+
+authRouter.post('/admin-login', loginAsAdmin)
 
 authRouter.get('/check', authorize(['Admin', 'Staff', 'User']), (req, res) => {
     res.json({

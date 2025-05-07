@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const verifyPayment = async (req, res) => {
+const verifyPayment = async (req, res, next) => {
   const { reference } = req.body;
 
   if (!reference) {
@@ -31,6 +31,7 @@ const verifyPayment = async (req, res) => {
     
   } catch (error) {
     return res.status(500).json({ message: 'Verification failed', error: error.message });
+    next(error);
   }
 };
 

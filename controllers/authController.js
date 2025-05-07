@@ -71,6 +71,7 @@ const signin = async (req, res, next) => {
     if (!checkpassword) {
       return res.status(400).json({ passwordMessage: "Incorrect password" });
     }
+
     console.log("Password Match: ", checkpassword);
     const token = jwt.sign(
       { id: user._id, role: user.role },
@@ -79,6 +80,45 @@ const signin = async (req, res, next) => {
     );
 
     // Set the token as an HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents JavaScript access for security
+      secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
+      // sameSite: "none", // Prevent CSRF attacks
+      sameSite: "strict", // Prevent CSRF attacks
+       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+    });
+
+    res.json({ message: "Login successful!" });
+  } catch (err) {
+    console.log(`Error while trying to login : ${err}`);
+    next(err);
+  }
+};
+
+const loginAsAdmin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    console.log(req.body);
+    if (!user) {
+      return res.status(400).json({ emailMessage: "User not found" });
+    }
+
+    const checkpassword = await bcryptjs.compare(password, user.password);
+
+    if (!checkpassword) {
+      return res.status(400).json({ passwordMessage: "Incorrect password" });
+    }
+
+    const isAdmin = user.role === "Admin";
+    if (!isAdmin) return res.status(403).json({ message: "Access denied" });
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.SECRETKEY,
+      { expiresIn: "3h" }
+    );
+
     res.cookie("token", token, {
       httpOnly: true, // Prevents JavaScript access for security
       secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
@@ -166,7 +206,7 @@ const logout = async (req, res) => {
   res.json({ message: "Logged out successfully" });
 };
 
-const changePassword = async (req, res) => {
+const changePassword = async (req, res, next) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const userId = req.user.id; // Assuming you have the user ID from the token
@@ -185,7 +225,8 @@ const changePassword = async (req, res) => {
     res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error changing password" });
+    next(error);
   }
 };
 
-export { signup, signin, forgot_password, reset_password, logout, changePassword};
+export { signup, signin, forgot_password, reset_password, logout, changePassword, loginAsAdmin };

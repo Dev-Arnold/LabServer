@@ -95,8 +95,9 @@ const getProductByCategory = async (req, res, next) => {
     try {
         let { category } = req.params;
         let products = await Product.find({ category });
-        console.log(products)
-        if (!products) return res.status(404).json({ message: "No product found" });
+
+        if (!products || products.length === 0) return res.status(404).json({ message: "No product found" });
+
         res.status(200).json(products);
     }
     catch (error) {
@@ -118,6 +119,23 @@ const filterProducts = async (req, res, next) => {
     }
 }
 
+const getLatestProducts = async (req, res, next) => {
+    try {
+        const fewProds = await Product.find()
+            .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+            .limit(10); // Limit to 6 products
+
+        if (!fewProds || fewProds.length === 0) {
+            return res.status(404).json({ message: "No products found" });
+        }
+
+        res.status(200).json(fewProds);
+    } catch (error) {
+        console.error(`Error while fetching latest products: ${error}`);
+        next(error);
+    }
+};
+
 export {
     addProduct,
     delProduct,
@@ -125,5 +143,6 @@ export {
     getAllProducts,
     updateOneProduct,
     getProductByCategory,
-    filterProducts
+    filterProducts,
+    getLatestProducts
 }
