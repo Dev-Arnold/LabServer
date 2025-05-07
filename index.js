@@ -22,7 +22,7 @@ app.use(e.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-    origin: "accon-lab.vercel.app",
+    origin: ["http://localhost:5173","https://accon-lab.vercel.app"],
     credentials: true,
     optionsSuccessStatus: 200
 }));
