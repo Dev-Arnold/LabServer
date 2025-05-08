@@ -5,6 +5,7 @@ dotenv.config();
 // const User = require("../models/User");
 import User from "../models/User.js";
 import cookieParser from "cookie-parser";
+import nodemailer from "nodemailer";
 
 const signup = async (req, res, next) => {
   // const email_ent = await User.findOne({email});
@@ -142,7 +143,7 @@ const forgot_password = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const resetToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    const resetToken = jwt.sign({ id: user._id }, process.env.SECRETKEY, {
       expiresIn: "15m",
     });
 
@@ -150,8 +151,8 @@ const forgot_password = async (req, res, next) => {
     const transporter = nodemailer.createTransport({
       service: "gmail", // or your email service provider
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.ADMIN_EMAIL,
+        pass: process.env.ADMIN_EMAIL_PASSWORD,
       },
     });
     const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
@@ -176,11 +177,11 @@ const reset_password = async (req, res, next) => {
     return res.status(400).json({ message: "Token is required" });
   }
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.SECRETKEY);
     const user = await User.findById(decoded.id); //maybe _id
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.password = await bcrypt.hash(password, 10);
+    user.password = await bcryptjs.hash(password, 10);
     await user.save();
 
     res.status(200).json({ message: "Password reset successfully." });

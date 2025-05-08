@@ -1,5 +1,5 @@
 import e from "express";
-import { changePassword, loginAsAdmin, logout, signin, signup } from "../controllers/authController.js";
+import { changePassword, forgot_password, loginAsAdmin, logout, reset_password, signin, signup } from "../controllers/authController.js";
 import authorize from "../middlewares/authorize.js";
 import User from "../models/User.js";
 const authRouter = e.Router();
@@ -22,6 +22,10 @@ authRouter.get('/check', authorize(['Admin', 'Staff', 'User']), (req, res) => {
 })
 
 authRouter.post('/logout',logout)
+
+authRouter.post('/reset-password/:token', reset_password);
+
+authRouter.post('/forgot-password', forgot_password);
 
 authRouter.get('/admin', authorize(['Admin']), async (req, res) => {
     const admin = await User.findById(req.user.id).select('-password'); 
