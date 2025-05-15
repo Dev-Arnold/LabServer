@@ -1,8 +1,7 @@
-// const jwt = require("jsonwebtoken");
 import jwt from "jsonwebtoken";
 
 const authorize = (allowedRoles) => (req, res, next) => {
-  console.log("Cookies in Request:", req.cookies); // Debugging
+  // console.log("Cookies in Request:", req.cookies);
 
   const token = req.cookies?.token;
 

@@ -162,10 +162,33 @@ const getRecentOrders = async (req, res, next) => {
     }
 }
 
+const dashboardStats = async (req, res, next) => {
+  try {
+    const [totalProducts, totalUsers, pendingOrders, completedOrders] = await Promise.all([
+      Product.countDocuments(),
+      User.countDocuments(),
+      Order.countDocuments({ deliveryStatus: 'pending' }),
+      Order.countDocuments({ deliveryStatus: 'completed' })
+    ]);
+
+    res.json({
+      totalProducts,
+      totalUsers,
+      pendingOrders,
+      completedOrders,
+    });
+  } catch (error) {
+    console.error("Internal server error", error);
+    res.status(500).json({ message: 'Server error' });
+    next(error);
+  }
+}
+
 export {
     placeOrder,
     getOrders,
     get1Order,
     getOrderByUser,
-    getRecentOrders
+    getRecentOrders,
+    dashboardStats
 }

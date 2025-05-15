@@ -12,14 +12,10 @@ productRouter.get('/latest', getLatestProducts);
 
 productRouter.get('/:id',getOneProduct);
 
-productRouter.put('/:id',authorize(["Admin","Staff"]),updateOneProduct);
+productRouter.put('/:id',updateOneProduct);
 
 productRouter.get('/category/:category',getProductByCategory);
 
 productRouter.get('/',getAllProducts);
 
 export default productRouter 
-
-// blaq diamond - summar mohit 
-
-// Tumisho - sax dance

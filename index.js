@@ -14,6 +14,7 @@ import notificationRouter from "./routes/notificationRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import cors from 'cors'
+import { dashboardStats } from "./controllers/orderController.js";
 const port = process.env.PORT || 2600;
 const limiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -35,6 +36,8 @@ app.use(cors({
     optionsSuccessStatus: 200
 }));
 app.use(limiter);
+
+app.get('/admin/dashboard', dashboardStats)
 
 app.use('/auth', authRouter) 
 

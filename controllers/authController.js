@@ -41,14 +41,15 @@ const signup = async (req, res, next) => {
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
       process.env.SECRETKEY,
-      { expiresIn: "3h" }
+      { expiresIn: "3d" }
     );
 
     // Set the token as an HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true, // Prevents JavaScript access for security
-      secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
-      sameSite: "strict", // Prevent CSRF attacks
+      secure: false, // Use true in production (HTTPS required)
+      sameSite: "None", // Prevent CSRF attacks
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in ms
     });
 
     res.status(201).json({ message: "Signup successful!" });
@@ -77,17 +78,17 @@ const signin = async (req, res, next) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.SECRETKEY,
-      { expiresIn: "3h" }
+      { expiresIn: "3d" }
     );
 
     // Set the token as an HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true, // Prevents JavaScript access for security
       // secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
-      secure: true, // Use true in production (HTTPS required)
+      secure: false, // Use true in production (HTTPS required)
       sameSite: "None", // Prevent CSRF attacks
       // sameSite: "strict", // Prevent CSRF attacks
-       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in ms
     });
 
     res.json({ message: "Login successful!" });
@@ -97,44 +98,6 @@ const signin = async (req, res, next) => {
   }
 };
 
-const loginAsAdmin = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    console.log(req.body);
-    if (!user) {
-      return res.status(400).json({ emailMessage: "User not found" });
-    }
-
-    const checkpassword = await bcryptjs.compare(password, user.password);
-
-    if (!checkpassword) {
-      return res.status(400).json({ passwordMessage: "Incorrect password" });
-    }
-
-    const isAdmin = user.role === "Admin";
-    if (!isAdmin) return res.status(403).json({ message: "Access denied" });
-
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.SECRETKEY,
-      { expiresIn: "3h" }
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true, // Prevents JavaScript access for security
-      secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
-      sameSite: "None", // Prevent CSRF attacks
-      // sameSite: "strict", // Prevent CSRF attacks
-       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
-    });
-
-    res.json({ message: "Login successful!" });
-  } catch (err) {
-    console.log(`Error while trying to login : ${err}`);
-    next(err);
-  }
-};
 
 const forgot_password = async (req, res, next) => {
   const { email } = req.body;
@@ -231,4 +194,4 @@ const changePassword = async (req, res, next) => {
   }
 };
 
-export { signup, signin, forgot_password, reset_password, logout, changePassword, loginAsAdmin };
+export { signup, signin, forgot_password, reset_password, logout, changePassword };
