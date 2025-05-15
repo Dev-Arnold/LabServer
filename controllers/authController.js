@@ -85,7 +85,7 @@ const signin = async (req, res, next) => {
     res.cookie("token", token, {
       httpOnly: true, // Prevents JavaScript access for security
       // secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
-      secure: false, // Use true in production (HTTPS required)
+      secure: true, // Use true in production (HTTPS required)
       sameSite: "Lax", // Prevent CSRF attacks
       // sameSite: "strict", // Prevent CSRF attacks
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in ms
