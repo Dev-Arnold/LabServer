@@ -32,7 +32,9 @@ app.use(cookieParser());
 
 app.use(cors({
     origin: (origin, callback) => {
-        callback(null, true); // Accept any origin
+        // Allow requests with no origin (like curl, Postman)
+        if (!origin) return callback(null, true);
+        return callback(null, origin); // Reflect the request origin
     },
     credentials: true,
     optionsSuccessStatus: 200
