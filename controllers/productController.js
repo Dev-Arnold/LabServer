@@ -74,21 +74,21 @@ const updateOneProduct = async(req,res,next)=>{
 
 const getAllProducts = async (req, res, next) => {
     try {
-        const cached = await redis.get('shopPage:products');
+        // const cached = await redis.get('shopPage:products');
   
         if (cached) {
           console.log('Serving products from cache 🔥');
           return res.status(200).json(JSON.parse(cached));
         }
     
-        console.log('Cache not found, fetching from DB...');
+        // console.log('Cache not found, fetching from DB...');
         let products = await Product.find();
 
         if (!products) {
             return res.status(404).json({ message: "No product found" })
         }
 
-        await redis.set('shopPage:products', JSON.stringify(products), 'EX', 300);
+        // await redis.set('shopPage:products', JSON.stringify(products), 'EX', 300);
         res.status(200).json(products);
 
     } catch (err) {

@@ -31,7 +31,11 @@ app.use(e.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-    origin: ["http://localhost:5173","https://accon-lab.vercel.app"],
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like curl, Postman)
+        if (!origin) return callback(null, true);
+        return callback(null, origin); // Reflect the request origin
+    },
     credentials: true,
     optionsSuccessStatus: 200
 }));
