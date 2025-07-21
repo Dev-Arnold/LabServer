@@ -4,7 +4,8 @@ import { upload } from "../cloudinaryConfig.js";
 import { addProduct, delProduct, getAllProducts, getLatestProducts, getOneProduct, getProductByCategory, updateOneProduct } from "../controllers/productController.js";
 import authorize from "../middlewares/authorize.js";
 
-productRouter.post('/',upload.single('image'), authorize(["Admin","Staff"]), addProduct);
+// productRouter.post('/',upload.single('image'), authorize(["Admin","Staff"]), addProduct);
+productRouter.post('/',upload.single('image'), addProduct);
 
 productRouter.delete('/:id',authorize(["Admin"]),delProduct);
 

@@ -1,39 +1,39 @@
 import axios from 'axios';
+import dotenv from "dotenv";
+dotenv.config();
 
-const verifyPayment = async (req, res, next) => {
-  const { reference } = req.body;
-
-  if (!reference) {
-    return res.status(400).json({ message: 'No payment reference provided' });
-  }
+const verifyPayment = async (req, res) => {
+  const { transaction_id } = req.body;
 
   try {
-    const response = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-      },
-    });
+    const response = await axios.get(
+      `https://api.flutterwave.com/v3/transactions/${transaction_id}/verify`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+        },
+      }
+    );
 
-    const data = response.data;
+    const paymentData = response.data;
 
-    if (data.data.status === 'success') {
-      // TODO: Save payment, update order, etc
-      return res.status(200).json({ 
-        message: 'Payment verified successfully', 
-        paymentStatus: data.data.status, 
-        reference: data.data.reference, 
-        amount: data.data.amount, 
-        customerEmail: data.data.customer.email 
+    if (
+      paymentData.status === 'success' &&
+      paymentData.data.status === 'successful'
+    ) {
+      // 🎉 Transaction was successful
+      // Save order, update user, send email, whatever you want
+      return res.status(200).json({
+        message: 'Payment verified successfully',
+        payment: paymentData.data,
       });
     } else {
       return res.status(400).json({ message: 'Payment not successful' });
     }
-    
   } catch (error) {
-    return res.status(500).json({ message: 'Verification failed', error: error.message });
-    next(error);
+    console.error('Flutterwave verification error:', error.response?.data || error.message);
+    res.status(500).json({ message: 'Payment verification failed' });
   }
 };
 
-// module.exports = { verifyPayment };
-export { verifyPayment };
+export default verifyPayment;

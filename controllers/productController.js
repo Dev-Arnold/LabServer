@@ -77,7 +77,7 @@ const getAllProducts = async (req, res, next) => {
         const cached = await redis.get('shopPage:products');
   
         if (cached) {
-          console.log('Serving from cache 🔥');
+          console.log('Serving products from cache 🔥');
           return res.status(200).json(JSON.parse(cached));
         }
     
