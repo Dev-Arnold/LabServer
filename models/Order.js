@@ -57,6 +57,14 @@ const orderSchema = new mongoose.Schema(
     isNewOrder: {
       type: Boolean,
       default: true, // helps the admin see fresh orders
+    },
+    paymentProof: {
+      type: String, // file path
+      required: false
+    },
+    transactionRef: {
+      type: String,
+      required: false
     }
   },
   {

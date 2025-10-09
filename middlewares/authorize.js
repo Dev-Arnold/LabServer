@@ -1,19 +1,24 @@
 import jwt from "jsonwebtoken";
 
 const authorize = (allowedRoles) => (req, res, next) => {
-  // console.log("Cookies in Request:", req.cookies);
+  // console.log("Cookies in Request:", req.cookies.token);
 
-  const token = req.cookies?.token;
+  const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
-  if (!token) return res.status(403).json({ message: "Access denied. No token provided." });
+  if (!token)
+    return res
+      .status(403)
+      .json({ message: "Access denied. No token provided." });
 
   try {
     const decoded = jwt.verify(token, process.env.SECRETKEY);
     req.user = decoded;
+    // console.log("Decoded Token:", decoded);
 
-    // Check if user's role is allowed
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+      return res
+        .status(403)
+        .json({ message: "Access denied. Insufficient permissions." });
     }
 
     next(); // Move to the next middleware or controller

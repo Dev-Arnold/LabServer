@@ -63,7 +63,6 @@ const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    console.log(req.body);
     if (!user) {
       return res.status(400).json({ emailMessage: "User not found" });
     }
@@ -81,9 +80,8 @@ const signin = async (req, res, next) => {
       { expiresIn: "3d" }
     );
 
-    // Set the token as an HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: true, // Prevents JavaScript access for security
+      httpOnly: true, 
       secure: process.env.NODE_ENV === "production", // Use true in production (HTTPS required)
       // secure: true, // Use true in production (HTTPS required)
       sameSite: "None", 
