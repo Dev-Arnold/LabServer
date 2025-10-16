@@ -1,0 +1,21 @@
+{
+  "user": "675a1b2c3d4e5f6789012345",
+  "items": [
+    {
+      "product": "675a1b2c3d4e5f6789012346",
+      "quantity": 3
+    }
+  ],
+  "billingDetails": {
+    "firstname": "Jane",
+    "lastname": "Smith",
+    "email": "jane.smith@example.com",
+    "phone": 9876543210
+  },
+  "shippingAddress": {
+    "address": "456 Oak Avenue",
+    "city": "Los Angeles",
+    "state": "CA"
+  },
+  "totalAmount": 149.50
+}

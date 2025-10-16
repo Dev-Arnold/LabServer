@@ -31,12 +31,9 @@ app.use(e.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin) return callback(null, true);
-        return callback(null, origin); // Reflect the request origin
-    },
-    credentials: true,
-    optionsSuccessStatus: 200
+  origin: ['https://www.acconlabscientific.com','http://localhost:5173'],
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 app.use(limiter);
 

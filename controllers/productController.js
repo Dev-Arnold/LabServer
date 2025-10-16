@@ -22,10 +22,10 @@ const addProduct = async (req, res, next) => {
             status
         });
         
-        await newProduct.save();
-        await redis.del('homepage:products');
-        await redis.del('shopPage:products');
-        await redis.del('category:products');
+        // await newProduct.save();
+        // await redis.del('homepage:products');
+        // await redis.del('shopPage:products');
+        // await redis.del('category:products');
 
         res.status(201).json({ message: "Product added successfully" });
     } catch (err) {
@@ -41,9 +41,9 @@ const delProduct = async (req, res, next) => {
             return res.status(404).json({ message: "product not found" });
         }
 
-        await redis.del('homepage:products');
-        await redis.del('shopPage:products');
-        await redis.del('category:products');
+        // await redis.del('homepage:products');
+        // await redis.del('shopPage:products');
+        // await redis.del('category:products');
         res.status(200).json({ message: "product deleted successfully" });
 
     } catch (err) {
@@ -61,9 +61,9 @@ const updateOneProduct = async(req,res,next)=>{
         let updatedProduct = await Product.findByIdAndUpdate(id,updatedData,{new:true}); 
         if(!updatedProduct) return res.status(404).json({message:"product not found"}); 
 
-        await redis.del('homepage:products');
-        await redis.del('shopPage:products');
-        await redis.del('category:products');
+        // await redis.del('homepage:products');
+        // await redis.del('shopPage:products');
+        // await redis.del('category:products');
         res.status(200).json({message:"product updated successfully"});
 
     } catch (error) {
@@ -74,12 +74,12 @@ const updateOneProduct = async(req,res,next)=>{
 
 const getAllProducts = async (req, res, next) => {
     try {
-        const cached = await redis.get('shopPage:products');
+        // const cached = await redis.get('shopPage:products');
   
-        if (cached) {
-          console.log('Serving products from cache 🔥');
-          return res.status(200).json(JSON.parse(cached));
-        }
+        // if (cached) {
+        //   console.log('Serving products from cache 🔥');
+        //   return res.status(200).json(JSON.parse(cached));
+        // }
     
         // console.log('Cache not found, fetching from DB...');
         let products = await Product.find();
@@ -88,7 +88,7 @@ const getAllProducts = async (req, res, next) => {
             return res.status(404).json({ message: "No product found" })
         }
 
-        await redis.set('shopPage:products', JSON.stringify(products), 'EX', 300);
+        // await redis.set('shopPage:products', JSON.stringify(products), 'EX', 300);
         res.status(200).json(products);
 
     } catch (err) {

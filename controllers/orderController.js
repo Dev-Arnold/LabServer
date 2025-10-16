@@ -128,7 +128,7 @@ const placeOrder = async (req, res) => {
           
           <!-- Action Button -->
           <div style="text-align: center; margin: 30px 0;">
-            <a href="#" style="display: inline-block; background-color: #87CEEB; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4); transition: all 0.3s ease;">
+            <a href="https://www.acconlabscientific.com/accon/order" style="display: inline-block; background-color: #87CEEB; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4); transition: all 0.3s ease;">
               View Order Details
             </a>
           </div>
