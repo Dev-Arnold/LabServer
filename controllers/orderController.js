@@ -262,7 +262,7 @@ const confirmPayment = async (req, res) => {
   try {
     const { orderId, transactionRef } = req.body;
     
-    if (!orderId || !transactionRef) {
+    if (!orderId) {
       return res.status(400).json({ message: 'Order ID and transaction reference are required' });
     }
     
@@ -276,7 +276,7 @@ const confirmPayment = async (req, res) => {
     }
 
     order.paymentProof = req.file.path;
-    order.transactionRef = transactionRef;
+    order.transactionRef = transactionRef || null;
     order.paymentStatus = 'paid';
     await order.save();
 
